@@ -21,7 +21,7 @@
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/version/{{ version }}/{{ item }}"
         dest: "{{ appl_dir }}/octave/{{ version }}/{{ item }}"
-        mode: "ug=rwx,o=rx"
+        mode: "ug=rw,o=r"
         group: "{{ group }}"
       loop:
         - "octave.def"
@@ -35,6 +35,13 @@
       loop:
         - "octave_apptainer_exec"
         - "octave"
+
+    - name: "Build the container"
+      ansible.builtin.command: |
+        apptainer build octave.sif octave.def
+      args:
+        chdir: "{{ appl_dir }}/octave/{{ version }}"
+        creates: "{{ appl_dir }}/octave/{{ version }}/octave.sif"
 
     - name: "Create modulefiles directory"
       ansible.builtin.file:

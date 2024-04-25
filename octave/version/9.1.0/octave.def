@@ -1,2 +1,2 @@
 Bootstrap: docker
-From: docker://gnuoctave/octave:9.1.0
+From: gnuoctave/octave:9.1.0
