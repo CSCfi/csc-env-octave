@@ -20,6 +20,9 @@ case ${1:-} in
     puhti)
         GROUPNAME=group_puhti
         ;;
+    mahti)
+        GROUPNAME=group_mahti
+        ;;
     help|-h|--help)
         echo "$USAGE"
         exit 0
