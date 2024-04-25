@@ -1,0 +1,55 @@
+- name: "Install octave environment"
+  hosts:
+    - "group_localhost"
+    - "group_puhti"
+    - "group_mahti"
+  become: false
+
+  tasks:
+    - name: "Create the application directory"
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: "directory"
+        mode: "ug=rwx,o=rx,g+s"
+        group: "{{ group }}"
+      loop:
+        - "{{ appl_dir }}/octave"
+        - "{{ appl_dir }}/octave/{{ version }}"
+        - "{{ appl_dir }}/octave/{{ version }}/bin"
+
+    - name: "Copy the container files"
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/version/{{ version }}/{{ item }}"
+        dest: "{{ appl_dir }}/octave/{{ version }}/{{ item }}"
+        mode: "ug=rwx,o=rx"
+        group: "{{ group }}"
+      loop:
+        - "octave.def"
+
+    - name: "Copy the wrapper scripts"
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/version/{{ version }}/bin/{{ item }}"
+        dest: "{{ appl_dir }}/octave/{{ version }}/bin/{{ item }}"
+        mode: "ug=rwx,o=rx"
+        group: "{{ group }}"
+      loop:
+        - "octave_apptainer_exec"
+        - "octave"
+
+    - name: "Create modulefiles directory"
+      ansible.builtin.file:
+        path: "{{ modulefiles_dir }}/octave"
+        state: "directory"
+        mode: "ug=rwx,o=rx,g+s"
+        group: "{{ group }}"
+      tags:
+        - "never"
+
+    - name: "Copy modulefiles"
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/version/{{ version }}/octave.lua"
+        dest: "{{ modulefiles_dir }}/octave/{{ version }}.lua"
+        mode: "ug=rw,o=r"
+        group: "{{ group }}"
+      tags:
+        - "never"

@@ -1,0 +1,39 @@
+group_localhost:
+  hosts:
+    localhost:
+      ansible_connection: "local"
+      ansible_python_interpreter: "/usr/bin/python3"
+      ansible_remote_tmp: "$HOME/.ansible/tmp"
+  vars:
+    system_name: "local"
+    group: "csc"
+    appl_dir: "{{ inventory_dir }}/.tmp/appl/soft/math"
+    modulefiles_dir: "{{ inventory_dir }}/.tmp/appl/modulefiles"
+group_puhti:
+  hosts:
+    puhti-login13.csc.fi:
+      ansible_connection: "ssh"
+      ansible_python_interpreter: "/usr/bin/python3.9"
+      ansible_remote_tmp: "/local_scratch/$USER/.ansible/tmp"
+      ansible_env:
+        APPTAINER_TMPDIR: "/local_scratch/$USER/.apptainer"
+        APPTAINER_CACHEDIR: "/local_scratch/$USER/.apptainer"
+  vars:
+    system_name: "puhti"
+    group: "p_installation"
+    appl_dir: "/appl/soft/math"
+    modulefiles_dir: "/appl/modulefiles"
+group_mahti:
+  hosts:
+    mahti-login13.csc.fi:
+      ansible_connection: "ssh"
+      ansible_python_interpreter: "/usr/bin/python3.9"
+      ansible_remote_tmp: "/local_scratch/$USER/.ansible/tmp"
+      ansible_env:
+        APPTAINER_TMPDIR: "/local_scratch/$USER/.apptainer"
+        APPTAINER_CACHEDIR: "/local_scratch/$USER/.apptainer"
+  vars:
+    system_name: "mahti"
+    group: "m_installation"
+    appl_dir: "/appl/soft/math"
+    modulefiles_dir: "/appl/modulefiles"
