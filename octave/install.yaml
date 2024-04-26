@@ -17,15 +17,6 @@
         - "{{ appl_dir }}/octave/{{ version }}"
         - "{{ appl_dir }}/octave/{{ version }}/bin"
 
-    - name: "Copy the container files"
-      ansible.builtin.copy:
-        src: "{{ playbook_dir }}/version/{{ version }}/{{ item }}"
-        dest: "{{ appl_dir }}/octave/{{ version }}/{{ item }}"
-        mode: "ug=rw,o=r"
-        group: "{{ group }}"
-      loop:
-        - "octave.def"
-
     - name: "Copy the wrapper scripts"
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/version/{{ version }}/bin/{{ item }}"
@@ -38,7 +29,7 @@
 
     - name: "Build the container"
       ansible.builtin.command: |
-        apptainer build octave.sif octave.def
+        apptainer build octave.sif "docker://ghcr.io/cscfi/octave:9.1.0"
       args:
         chdir: "{{ appl_dir }}/octave/{{ version }}"
         creates: "{{ appl_dir }}/octave/{{ version }}/octave.sif"
@@ -49,8 +40,6 @@
         state: "directory"
         mode: "ug=rwx,o=rx,g+s"
         group: "{{ group }}"
-      tags:
-        - "never"
 
     - name: "Copy modulefiles"
       ansible.builtin.copy:
@@ -58,5 +47,3 @@
         dest: "{{ modulefiles_dir }}/octave/{{ version }}.lua"
         mode: "ug=rw,o=r"
         group: "{{ group }}"
-      tags:
-        - "never"
