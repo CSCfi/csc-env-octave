@@ -7,7 +7,9 @@ RUN apt-get --yes update  && \
     apt-get --yes upgrade && \
     DEBIAN_FRONTEND="noninteractive" \
     apt-get --no-install-recommends --yes install \
-      libnetcdf-dev && \
+      libnetcdf-dev \
+      libnetcdff-dev \
+      liblapack-dev && \
     apt-get --yes clean          && \
     apt-get --yes autoremove     && \
     rm -Rf /var/lib/apt/lists/*
