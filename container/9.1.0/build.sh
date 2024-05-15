@@ -5,7 +5,7 @@ set -euo pipefail
 cd "${0%/*}"
 
 # Build the container
-podman build --tag "ghcr.io/cscfi/octave:9.1.0" .
+podman build --tag "ghcr.io/cscfi/octave:9.1.0" -f octave.docker
 
 # Login to GitHub container registry
 # Prompts for an access token
