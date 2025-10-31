@@ -46,3 +46,8 @@
       args:
         chdir: "{{ appl_dir }}/octave/{{ version }}"
         creates: "{{ appl_dir }}/octave/{{ version }}/octave.sif"
+
+    - name: "Set container mode"
+      ansible.builtin.file:
+        path: "{{ appl_dir }}/octave/{{ version }}/octave.sif"
+        mode: "ug=rwx,o=rx"
