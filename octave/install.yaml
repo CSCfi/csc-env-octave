@@ -5,7 +5,7 @@
   become: false
 
   tasks:
-    - name: "Create the application directory"
+    - name: "Create directories"
       ansible.builtin.file:
         path: "{{ item }}"
         state: "directory"
@@ -15,34 +15,34 @@
         - "{{ appl_dir }}/octave"
         - "{{ appl_dir }}/octave/{{ version }}"
         - "{{ appl_dir }}/octave/{{ version }}/bin"
+        - "{{ modulefiles_dir }}/octave"
 
-    - name: "Copy the wrapper scripts"
+    - name: "Copy files"
       ansible.builtin.copy:
-        src: "{{ playbook_dir }}/version/{{ version }}/bin/{{ item }}"
-        dest: "{{ appl_dir }}/octave/{{ version }}/bin/{{ item }}"
-        mode: "ug=rwx,o=rx"
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
         group: "{{ group }}"
       loop:
-        - "octave_apptainer_exec"
-        - "octave"
+        - src: "{{ playbook_dir }}/version/{{ version }}/bin/octave_apptainer_exec"
+          dest: "{{ appl_dir }}/octave/{{ version }}/bin/octave_apptainer_exec"
+          mode: "ug=rwx,o=rx"
+        - src: "{{ playbook_dir }}/version/{{ version }}/bin/octave"
+          dest: "{{ appl_dir }}/octave/{{ version }}/bin/octave"
+          mode: "ug=rwx,o=rx"
+        - src: "{{ playbook_dir }}/version/{{ version }}/Makefile"
+          dest: "{{ appl_dir }}/octave/{{ version }}/Makefile"
+          mode: "ug=rw,o=r"
+        - src: "{{ playbook_dir }}/version/{{ version }}/octave.def"
+          dest: "{{ appl_dir }}/octave/{{ version }}/octave.def"
+          mode: "ug=rw,o=r"
+        - src: "{{ playbook_dir }}/version/{{ version }}/octave.lua"
+          dest: "{{ modulefiles_dir }}/octave/{{ version }}.lua"
+          mode: "ug=rw,o=r"
 
     - name: "Build the container"
       ansible.builtin.command: |
-        apptainer build octave.sif "docker://ghcr.io/cscfi/octave:9.1.0"
+        make
       args:
         chdir: "{{ appl_dir }}/octave/{{ version }}"
         creates: "{{ appl_dir }}/octave/{{ version }}/octave.sif"
-
-    - name: "Create modulefiles directory"
-      ansible.builtin.file:
-        path: "{{ modulefiles_dir }}/octave"
-        state: "directory"
-        mode: "ug=rwx,o=rx,g+s"
-        group: "{{ group }}"
-
-    - name: "Copy modulefiles"
-      ansible.builtin.copy:
-        src: "{{ playbook_dir }}/version/{{ version }}/octave.lua"
-        dest: "{{ modulefiles_dir }}/octave/{{ version }}.lua"
-        mode: "ug=rw,o=r"
-        group: "{{ group }}"
