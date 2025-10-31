@@ -1,6 +1,5 @@
 - name: "Install octave environment"
   hosts:
-    - "group_localhost"
     - "group_puhti"
     - "group_mahti"
   become: false

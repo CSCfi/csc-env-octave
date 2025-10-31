@@ -14,9 +14,6 @@ EXAMPLES
 "
 
 case ${1:-} in
-    local|localhost)
-        GROUPNAME=group_localhost
-        ;;
     puhti)
         GROUPNAME=group_puhti
         ;;
