@@ -1,25 +1,10 @@
 #!/bin/bash
 
-# Bind common CSC environment directories.
-OCTAVE_SING_FLAGS="$OCTAVE_SING_FLAGS --bind /users"
-OCTAVE_SING_FLAGS="$OCTAVE_SING_FLAGS --bind /projappl"
-OCTAVE_SING_FLAGS="$OCTAVE_SING_FLAGS --bind /scratch"
-if [ -d "$TMPDIR" ]; then
-    OCTAVE_SING_FLAGS="$OCTAVE_SING_FLAGS --bind $TMPDIR"
-fi
-if [ -d "$LOCAL_SCRATCH" ]; then
-    OCTAVE_SING_FLAGS="$OCTAVE_SING_FLAGS --bind $LOCAL_SCRATCH"
-fi
-if [ -d "/fmi" ]; then
-    OCTAVE_SING_FLAGS="$OCTAVE_SING_FLAGS --bind /fmi"
-fi
-if [ -d "/appl/data" ]; then
-    OCTAVE_SING_FLAGS="$OCTAVE_SING_FLAGS --bind /appl/data"
-fi
+# Print directory if it exists
+ifexists() { [ -d "$1" ] && echo "$1"; }
 
-# Binding /run/user is required to run Octave.
-OCTAVE_SING_FLAGS="$OCTAVE_SING_FLAGS --bind /run/user"
-
-# Apptainer exec (allow word splitting for OCTAVE_SING_FLAGS)
-# shellcheck disable=SC2086
-apptainer --silent exec $OCTAVE_SING_FLAGS "$OCTAVE_SING_IMAGE" "$@"
+# Exec octave container
+apptainer --silent exec \
+    --bind="/run/user" \
+    --bind="/users,/projappl,/scratch,$TMPDIR,$LOCAL_SCRATCH,$(ifexists /fmi),$(ifexists /appl/data)" \
+    "$OCTAVE_SING_IMAGE" "$@"
