@@ -24,8 +24,8 @@
         mode: "{{ item.mode }}"
         group: "{{ group }}"
       loop:
-        - src: "{{ playbook_dir }}/version/{{ version }}/bin/octave_apptainer_exec"
-          dest: "{{ appl_dir }}/octave/{{ version }}/bin/octave_apptainer_exec"
+        - src: "{{ playbook_dir }}/version/{{ version }}/bin/octave-apptainer-exec"
+          dest: "{{ appl_dir }}/octave/{{ version }}/bin/octave-apptainer-exec"
           mode: "ug=rwx,o=rx"
         - src: "{{ playbook_dir }}/version/{{ version }}/bin/octave"
           dest: "{{ appl_dir }}/octave/{{ version }}/bin/octave"
